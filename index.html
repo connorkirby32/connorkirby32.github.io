@@ -1,138 +1,70 @@
-
 <!DOCTYPE html>
 <html>
 	<head>
+	
 		<meta charset="utf-8">
-		<title>Home Page</title>		
-		<style>
-			html, body {
-				width: 100%;
-				height: 100%;
-			}
-			
-			body {
-				
-				margin: 0;
-				overflow: hidden;
-				font-family: arial;
-			}
-			
-			#blocker {
-
-				position: absolute;
-				width: 100%;
-				height: 100%;
-
-			}
-			
-         footer {
-
-                color: #ffffff;
-                width: 100%;
-                bottom: 0;
-                position: fixed;
-            }
-			
-			
-			#main {
-
-				width: 100%;
-				height: 30%;
-                color: #ffffff;
-				text-align: center;
-				cursor: pointer;
-
-			}
-
-
-			#menu a:hover {
-
-				color: #e5a30b;
-				padding: 20px;
-			}
-
-			#menu a {
-
-				padding:15px;
-
-			}
-
-}
-
-
-
-
-
-		</style>
+		<title>Home Page</title>
+		<link rel='stylesheet' href='stylesheets/style.css' />
 
 	</head>
 	<body>
-
+	
 		<div id="blocker">
 
 			<div id="main">
+			
 				<span style="font-size:80px">Connor Kirby</span>
 				<br />
+				
 				Student/ Software Engineer
+				
 			</div>
 
 			<div id="main">
+			
 				<span style="font-size:60px">
+				
 					<ul id="menu">
+					
 						<a li onclick="showAbout(this)" >About</li></a>
-						<a li>Resume</li></a>
+						
+						<a li>Space Shooter</li></a>
 						<a li><a href="https://github.com/connorkirby32">
-							<img src="images/gitLogo.png"style="width:120px;height:120px;border:0;">
-						</a></li></a>
+										<img src="images/gitLogo.png"style="width:120px;height:120px;border:0;" 
+										onmouseover="this.src='images/gitLogoGold.png'"
+										onmouseout="this.src='images/gitLogo.png'" ></a>
+						</li></a>
+						
 					</ul>
+					
 				</span>
+				
 				<p id = "about"></p>
+				
 				<br />
+				
 			</div>
-
-
-
+			
 		</div>
-
+		
+		
 		<script src="build/three.min.js"></script>
-
-		<script src="fonts/helvetiker_regular.typeface.js"></script>
-
-
-
+		
 		<script>
 
-			var aboutToggle = true;
-			function showAbout(){
-
-				if(aboutToggle){
-					document.getElementById('about').innerHTML="My name is Connor Kirby. I am currently a senior CS student at the University of Nevada Reno. I enjoy all things computer related but more specifically I have strong interests in web development, computer graphics, and game development. Please feel free to visit my Github or review my resume";
-					aboutToggle = false;
-				}
-				else{
-
-					document.getElementById('about').innerHTML = "";
-					aboutToggle = true;
-				}
-
-
-			}
-
 			var camera, scene, renderer;
-			var textMesh, material, mesh;
-			var spotLight;
-			var backgroundScene, backgroundCamera
+			var material, mesh;
 			var circleList = [];
 			var velList = [];
+			
+			var aboutToggle = true;
+			var about = document.getElementById( 'about' );
+			about.style.display = '';
 
 
-			// http://www.html5rocks.com/en/tutorials/pointerlock/intro/
 			initPhysics();
 			init();
 			update();
-
-			var main = document.getElementById( 'about' );
-			main.style.display = '';
 
 			function initPhysics(){
 			}
@@ -167,19 +99,13 @@
 				renderer.shadowMapEnabled	= true;
 				renderer.shadowMapType 		= THREE.PCFSoftShadowMap;
 
-				window.addEventListener( 'resize', onWindowResize, false );
-
-
-
 
 				window.addEventListener( 'resize', onWindowResize, false );
 				document.addEventListener( 'keydown',onKeyDown, false );
-				document.addEventListener( 'keyup', onKeyUp, false );
-				document.addEventListener( 'click', onClick, false );
 
 
 
-				prevTime = performance.now();
+				//Declare variables for circles
 				var radius;
 				var opacity;
 				var color;
@@ -188,13 +114,11 @@
 				segments = 128;
 				var x;
 				var y;
-				var toggle = -1;
+
 
 				for ( i = 0; i < numCircles; i++){
 
 					//Generate Random Values
-
-
 					radius = Math.floor((Math.random() * 5) + 1);
 
 					opacity = (Math.random() * (0.3 - 0.9) + 0.9).toFixed(4)
@@ -208,22 +132,21 @@
 					mesh = new THREE.Mesh( geometry, material );
 
 
-					x = Math.floor((Math.random() * 200) + 1);
-					x *= toggle;
+					x = Math.floor((Math.random() * 351) - 150);
 
 
-					y = Math.floor((Math.random() * 75) + 1);
-					y *= toggle;
-
-					toggle *= -1;
-					console.log(x);
+					y = Math.floor((Math.random() * 201) - 100);
+	
 
 					mesh.position.set(x,y,0);
+					
 					circleList.push(mesh);
+					
 					var vel = new THREE.Vector3();
 					vel.set(x,y,0);
 					vel.normalize();
 					velList.push(vel);
+					
 					scene.add(mesh);
 
 				}
@@ -235,94 +158,26 @@
 			function onKeyDown ( event ) {
 
 				switch( event.keyCode ) {
-						case 38: // up
-						case 87: // w
-							moveUp = true;
-							break;
-						case 37: // left
-						case 65: // a
-							moveLeft = true;
-							break;
-
-						case 40: // down
-						case 83: // s
-							moveDown = true;
-							break;
-
-						case 39: // right
-						case 68: // d
-							moveRight = true;
-							break;
-
-						case 32: // space
-
-							break;
-
-
-					case 80: /*P*/
-
-
-						break;
-
+					//May add some stuff here in the future
 				}
 
 			}
 
-			function onKeyUp ( event ) {
+			function showAbout(){
 
-				switch( event.keyCode ) {
-						case 38: // up
-						case 87: // w
-							moveUp = false;
-							break;
-						case 37: // left
-						case 65: // a
-							moveLeft = false;
-							break;
-
-						case 40: // down
-						case 83: // s
-							moveDown = false;
-							break;
-
-						case 39: // right
-						case 68: // d
-							moveRight = false;
-							break;
-
-						case 32: // space
-
-							break;
-
-
-						case 80: /*P*/
-
-
-						break;
-
+				if(aboutToggle){
+					document.getElementById('about').innerHTML="My name is Connor Kirby. I am currently a senior CS student at the University of Nevada Reno. I enjoy all things computer related but more specifically I have strong interests in web development, computer graphics, and game development. Please feel free to visit my Github or review my resume";
+					aboutToggle = false;
 				}
+				else{
+
+					document.getElementById('about').innerHTML = "";
+					aboutToggle = true;
+				}
+
 
 			}
 
-
-
-
-
-
-			function onClick ( event ) {
-
-				switch (event.which) {
-					case 1: //Left Click
-
-						break;
-					case 2: //Middle Click
-						break;
-					case 3: //Right Click
-						break;
-					default:
-						alert('You have a strange Mouse!');
-				}
-			}
 
 
 			//
@@ -357,7 +212,7 @@
 			function checkCircles(){
 
 
-					var x, y, z;
+				var x, y, z;
 
 				for(var i = 0; i < circleList.length; i++) {
 
@@ -397,13 +252,15 @@
 
 			}
 
-			
+
 		</script>
 
 	</body>
-	
+
 	<footer>
-  <p>Contact information: <a href="mailto:ckirby@nevada.unr.edu" style="color: #e5a30b">
-  ckirby@nevada.unr.edu</a>.</p>
-</footer> 
+		<p>Contact information: <a href="mailto:ckirby@nevada.unr.edu" style="color: #e5a30b">
+			ckirby@nevada.unr.edu</a>.</p>
+	</footer> 
+
+
 </html>
