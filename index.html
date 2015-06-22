@@ -1,0 +1,409 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Home Page</title>		
+		<style>
+			html, body {
+				width: 100%;
+				height: 100%;
+			}
+			
+			body {
+				
+				margin: 0;
+				overflow: hidden;
+				font-family: arial;
+			}
+			
+			#blocker {
+
+				position: absolute;
+				width: 100%;
+				height: 100%;
+
+			}
+			
+         footer {
+
+                color: #ffffff;
+                width: 100%;
+                bottom: 0;
+                position: fixed;
+            }
+			
+			
+			#main {
+
+				width: 100%;
+				height: 30%;
+                color: #ffffff;
+				text-align: center;
+				cursor: pointer;
+
+			}
+
+
+			#menu a:hover {
+
+				color: #e5a30b;
+				padding: 20px;
+			}
+
+			#menu a {
+
+				padding:15px;
+
+			}
+
+}
+
+
+
+
+
+		</style>
+
+	</head>
+	<body>
+
+		<div id="blocker">
+
+			<div id="main">
+				<span style="font-size:80px">Connor Kirby</span>
+				<br />
+				Student/ Software Engineer
+			</div>
+
+			<div id="main">
+				<span style="font-size:60px">
+					<ul id="menu">
+						<a li onclick="showAbout(this)" >About</li></a>
+						<a li>Resume</li></a>
+						<a li><a href="https://github.com/connorkirby32">
+							<img src="images/gitLogo.png"style="width:120px;height:120px;border:0;">
+						</a></li></a>
+					</ul>
+				</span>
+				<p id = "about"></p>
+				<br />
+			</div>
+
+
+
+		</div>
+
+		<script src="build/three.min.js"></script>
+
+		<script src="fonts/helvetiker_regular.typeface.js"></script>
+
+
+
+		<script>
+
+			var aboutToggle = true;
+			function showAbout(){
+
+				if(aboutToggle){
+					document.getElementById('about').innerHTML="My name is Connor Kirby. I am currently a senior CS student at the University of Nevada Reno. I enjoy all things computer related but more specifically I have strong interests in web development, computer graphics, and game development. Please feel free to visit my Github or review my resume";
+					aboutToggle = false;
+				}
+				else{
+
+					document.getElementById('about').innerHTML = "";
+					aboutToggle = true;
+				}
+
+
+			}
+
+			var camera, scene, renderer;
+			var textMesh, material, mesh;
+			var spotLight;
+			var backgroundScene, backgroundCamera
+			var circleList = [];
+			var velList = [];
+
+
+			// http://www.html5rocks.com/en/tutorials/pointerlock/intro/
+			initPhysics();
+			init();
+			update();
+
+			var main = document.getElementById( 'about' );
+			main.style.display = '';
+
+			function initPhysics(){
+			}
+
+			function init() {
+
+				//Create The Scene
+				scene = new THREE.Scene();
+
+				//Create the Camera
+				camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 1, 1000 );
+
+				//Set Camera Position
+				camera.position.z = 120;
+
+
+				// LIGHT
+				var light = new THREE.PointLight(0x006400);
+				light.position.set(0,0,0);
+				scene.add(light);
+
+
+
+
+
+				//Initialize the  webGL Renderer
+				renderer = new THREE.WebGLRenderer();
+				renderer.setClearColor( 0x000000 );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				document.body.appendChild( renderer.domElement );
+				renderer.shadowMapEnabled	= true;
+				renderer.shadowMapType 		= THREE.PCFSoftShadowMap;
+
+				window.addEventListener( 'resize', onWindowResize, false );
+
+
+
+
+				window.addEventListener( 'resize', onWindowResize, false );
+				document.addEventListener( 'keydown',onKeyDown, false );
+				document.addEventListener( 'keyup', onKeyUp, false );
+				document.addEventListener( 'click', onClick, false );
+
+
+
+				prevTime = performance.now();
+				var radius;
+				var opacity;
+				var color;
+				var numCircles = 80;
+				var colorList = [0x0b7537, 0xbb870f, 0xe5a30b, 0xe1471f, 0xff0b35 ];
+				segments = 128;
+				var x;
+				var y;
+				var toggle = -1;
+
+				for ( i = 0; i < numCircles; i++){
+
+					//Generate Random Values
+
+
+					radius = Math.floor((Math.random() * 5) + 1);
+
+					opacity = (Math.random() * (0.3 - 0.9) + 0.9).toFixed(4)
+
+					color = Math.floor(Math.random() * colorList.length);
+
+					material = new THREE.MeshBasicMaterial( { color: colorList[color], side: THREE.DoubleSide,  transparent: true, opacity: opacity } );
+
+					geometry = new THREE.CircleGeometry( radius, segments );
+
+					mesh = new THREE.Mesh( geometry, material );
+
+
+					x = Math.floor((Math.random() * 200) + 1);
+					x *= toggle;
+
+
+					y = Math.floor((Math.random() * 75) + 1);
+					y *= toggle;
+
+					toggle *= -1;
+					console.log(x);
+
+					mesh.position.set(x,y,0);
+					circleList.push(mesh);
+					var vel = new THREE.Vector3();
+					vel.set(x,y,0);
+					vel.normalize();
+					velList.push(vel);
+					scene.add(mesh);
+
+				}
+
+			}
+
+			//
+
+			function onKeyDown ( event ) {
+
+				switch( event.keyCode ) {
+						case 38: // up
+						case 87: // w
+							moveUp = true;
+							break;
+						case 37: // left
+						case 65: // a
+							moveLeft = true;
+							break;
+
+						case 40: // down
+						case 83: // s
+							moveDown = true;
+							break;
+
+						case 39: // right
+						case 68: // d
+							moveRight = true;
+							break;
+
+						case 32: // space
+
+							break;
+
+
+					case 80: /*P*/
+
+
+						break;
+
+				}
+
+			}
+
+			function onKeyUp ( event ) {
+
+				switch( event.keyCode ) {
+						case 38: // up
+						case 87: // w
+							moveUp = false;
+							break;
+						case 37: // left
+						case 65: // a
+							moveLeft = false;
+							break;
+
+						case 40: // down
+						case 83: // s
+							moveDown = false;
+							break;
+
+						case 39: // right
+						case 68: // d
+							moveRight = false;
+							break;
+
+						case 32: // space
+
+							break;
+
+
+						case 80: /*P*/
+
+
+						break;
+
+				}
+
+			}
+
+
+
+
+
+
+			function onClick ( event ) {
+
+				switch (event.which) {
+					case 1: //Left Click
+
+						break;
+					case 2: //Middle Click
+						break;
+					case 3: //Right Click
+						break;
+					default:
+						alert('You have a strange Mouse!');
+				}
+			}
+
+
+			//
+			function onWindowResize( event ) {
+
+
+			camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+			}
+
+			//
+
+			function update() {
+
+				requestAnimationFrame( update );
+				checkCircles();
+				render();
+
+
+			}
+
+
+			function render() {
+
+				renderer.render(scene, camera);
+
+			}
+
+			function checkCircles(){
+
+
+					var x, y, z;
+
+				for(var i = 0; i < circleList.length; i++) {
+
+
+
+
+
+					if(circleList[i].position.x > 175 ){
+
+						velList[i].x = -1;
+					}
+					else if(circleList[i].position.x < -175){
+
+						velList[i].x = 1;
+					}
+
+
+					if(circleList[i].position.y > 75 ){
+
+						velList[i].y = -1;
+					}
+					else if(circleList[i].position.y < -75){
+
+						velList[i].y = 1;
+					}
+
+
+					circleList[i].translateX(velList[i].x * .1);
+					circleList[i].translateY(velList[i].y * .1);
+
+
+
+
+				}
+
+
+
+			}
+
+			
+		</script>
+
+	</body>
+	
+	<footer>
+  <p>Contact information: <a href="mailto:ckirby@nevada.unr.edu" style="color: #e5a30b">
+  ckirby@nevada.unr.edu</a>.</p>
+</footer> 
+</html>
