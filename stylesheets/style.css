@@ -24,6 +24,7 @@
 				width: 100%;
 				bottom: 0;
 				position: fixed;
+				text-align: center;
             }
 			
 			
@@ -49,4 +50,16 @@
 				padding:15px;
 
 			}
-			
+
+
+			a {
+
+				color: #ffffff;
+				text-decoration: none;
+
+			}
+
+			link a:hover {
+
+				color: #e5a30b;
+			}
